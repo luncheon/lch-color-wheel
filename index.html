@@ -4,18 +4,44 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono">
+    <title>LCh Color Wheel</title>
+    <meta name="description" content="a wheel-style color picker based on CIE L*C*h color space">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=MuseoModerno&family=Roboto+Mono&family=Literata">
     <style>
       * {
         box-sizing: border-box;
+        margin: 0;
+      }
+      body {
+        font-family: 'Literata', sans-serif;
+        font-size: 1.25rem;
+      }
+      h1 {
+        font-family: 'MuseoModerno', sans-serif;
+        font-weight: 400;
+        font-size: 2.5rem;
+      }
+      h1 > strong {
+        font-weight: 400;
+        font-size: 3rem;
+      }
+      a {
+        color: hsl(239, 100.00%,  56%);
+        text-decoration: none;
+        border-bottom: 1px solid;
+      }
+      @media (hover: hover) {
+        a:hover {
+          color: hsl(239, 100.00%,  80%);
+        }
       }
       input {
         border: none;
         font-family: 'Roboto Mono', monospace;
         font-size: inherit;
         line-height: 1;
-        margin: 0;
         width: 6em;
         padding: .25em;
         border-radius: 4px;
@@ -25,9 +51,16 @@
       }
     </style>
   </head>
-  <body style="display: flex; flex-direction: column; align-items: center;">
-    <div id="color-wheel-container" style="line-height: 0; margin-bottom: 16px;"></div>
+  <body style="margin: 16px 0; text-align: center;">
+    <h1>
+      <strong>LCh</strong> Color Wheel
+    </h1>
+    <p>Compare to a <a href="https://luncheon.github.io/reinvented-color-wheel/">HSV Color Wheel</a></p>
+    <div id="color-wheel-container" style="line-height: 0; margin: 24px 0;"></div>
     <input id="hex">
+    <aside style="margin: 16px 0;">
+      <a href="https://github.com/luncheon/lch-color-wheel">GitHub</a>
+    </aside>
     <script src="index.iife.js"></script>
     <script>
       {
@@ -42,6 +75,7 @@
           const hexElement = document.getElementById('hex')
           hexElement.value = hex
           hexElement.style.background = hex
+          document.getElementsByTagName('h1')[0].style.color = hex
         }
         window.lchColorWheel = new LchColorWheel({
           appendTo: document.getElementById('color-wheel-container'),
