@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono">
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      input {
+        border: none;
+        font-family: 'Roboto Mono', monospace;
+        font-size: inherit;
+        line-height: 1;
+        margin: 0;
+        width: 6em;
+        padding: .25em;
+        border-radius: 4px;
+        text-align: center;
+        color: white;
+        text-shadow: 1px 1px 1px black;
+      }
+    </style>
+  </head>
+  <body style="display: flex; flex-direction: column; align-items: center;">
+    <div id="color-wheel-container" style="line-height: 0; margin-bottom: 16px;"></div>
+    <input id="hex">
+    <script src="index.iife.js"></script>
+    <script>
+      {
+        const pad = function (s) {
+          return s.length < 2 ? '0' + s : s
+        }
+        const rgb2hex = function (rgb) {
+          return '#' + pad(rgb[0].toString(16)) + pad(rgb[1].toString(16)) + pad(rgb[2].toString(16))
+        }
+        const update = function (wheel) {
+          const hex = rgb2hex(wheel.rgb)
+          const hexElement = document.getElementById('hex')
+          hexElement.value = hex
+          hexElement.style.background = hex
+        }
+        window.lchColorWheel = new LchColorWheel({
+          appendTo: document.getElementById('color-wheel-container'),
+          wheelDiameter: 300,
+          wheelThickness: 30,
+          handleDiameter: 24,
+          onChange: update
+        })
+        update(lchColorWheel)
+      }
+    </script>
+  </body>
+</html>

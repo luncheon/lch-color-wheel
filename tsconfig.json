@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "removeComments": false,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "newLine": "LF",
+    "baseUrl": ".",
+    "outDir": "."
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

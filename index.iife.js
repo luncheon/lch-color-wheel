@@ -1,0 +1,28 @@
+var LchColorWheel=function(){"use strict"
+const e=(e,t,h)=>{const i=e.appendChild(document.createElement(t))
+for(const e of Object.keys(h))i.style[e]=h[e]
+return i}
+class t{constructor(h){this.options=h,this.wheelDiameter=this.options.wheelDiameter||t.defaultOptions.wheelDiameter,this.wheelThickness=this.options.wheelThickness||t.defaultOptions.wheelThickness,this.handleDiameter=this.options.handleDiameter||t.defaultOptions.handleDiameter,this.maxChroma=this.options.maxChroma||t.defaultOptions.maxChroma,this.onChange=this.options.onChange||t.defaultOptions.onChange,this.rootElement=e(this.options.appendTo,"div",{position:"relative",borderRadius:"50%",display:"inline-block",lineHeight:"0",touchAction:"none",userSelect:"none",webkitTouchCallout:"none",webkitTapHighlightColor:"transparent"}),this.hueWheelElement=e(this.rootElement,"canvas",{borderRadius:"50%"}),this.hueHandleElement=e(this.rootElement,"div",{position:"absolute",boxSizing:"border-box",borderRadius:"50%",border:"2px solid white",boxShadow:"0 0 0 1px black inset",pointerEvents:"none"}),this.lcSpaceElement=e(this.rootElement,"canvas",{position:"absolute",left:"0",top:"0",right:"0",bottom:"0",margin:"auto"}),this.lcHandleElement=e(this.rootElement,"div",{position:"absolute",boxSizing:"border-box",borderRadius:"50%",border:"2px solid white",boxShadow:"0 0 0 1px black inset"}),this._lch=[50,this.maxChroma,0],this._requestRedrawLcSpace_=!1,this.redraw(),this.hueWheelElement.addEventListener("pointerdown",e=>{const t=e.currentTarget
+t.setPointerCapture(e.pointerId)
+const h=Math.atan2(e.offsetY-t.height/2,e.offsetX-t.width/2)
+this._setLch(this._lch[0],this._lch[1],180*h/Math.PI+90)}),this.hueWheelElement.addEventListener("pointermove",e=>{const t=e.currentTarget
+if(t.hasPointerCapture(e.pointerId)){const h=Math.atan2(e.offsetY-t.height/2,e.offsetX-t.width/2)
+this._setLch(this._lch[0],this._lch[1],180*h/Math.PI+90)}}),this.lcSpaceElement.addEventListener("pointerdown",e=>{const t=e.currentTarget
+t.setPointerCapture(e.pointerId),this._setLch(100-100*e.offsetY/t.width,e.offsetX*this.maxChroma/t.height,this._lch[2])}),this.lcSpaceElement.addEventListener("pointermove",e=>{const t=e.currentTarget
+t.hasPointerCapture(e.pointerId)&&this._setLch(100-100*e.offsetY/t.width,e.offsetX*this.maxChroma/t.height,this._lch[2])}),this.lcHandleElement.addEventListener("pointerdown",e=>{this.lcSpaceElement.setPointerCapture(e.pointerId)})}get lch(){return this._lch}set lch(e){this._setLch(e[0],e[1],e[2])}get rgb(){const e=t.lch2rgb(this._lch)
+return[Math.round(e[0]),Math.round(e[1]),Math.round(e[2])]}_setLch(e,t,h){const i=[...this._lch],s=this._lch=[Math.max(0,Math.min(100,e)),Math.max(0,Math.min(this.maxChroma,t)),h%360+(h<0?360:0)]
+s[0]===i[0]&&s[1]===i[1]||(this._redrawLcHandle(),this._redrawHueWheel()),s[2]!==i[2]&&(this._redrawHueHandle(),this._requestRedrawLcSpace()),s[0]===i[0]&&s[1]===i[1]&&s[2]===i[2]||this.onChange(this)}redraw(){this.hueWheelElement.width=this.hueWheelElement.height=this.wheelDiameter,this.lcSpaceElement.width=this.lcSpaceElement.height=(this.wheelDiameter-2*this.wheelThickness)*Math.SQRT1_2,this.hueHandleElement.style.width=this.hueHandleElement.style.height=this.lcHandleElement.style.width=this.lcHandleElement.style.height=this.handleDiameter+"px",this._redrawHueWheel(),this._redrawHueHandle(),this._redrawLcSpace(),this._redrawLcHandle()}_redrawHueWheel(){const[e,h]=this._lch,i=this.hueWheelElement,s=i.getContext("2d")
+s.imageSmoothingEnabled=!1,s.lineWidth=this.wheelThickness,s.clearRect(0,0,i.width,i.height)
+const a=i.width/2,n=i.height/2,o=a-this.wheelThickness/2,r=Math.PI/180
+for(let i=0;i<360;i++){const l=t.lch2rgb([e,h,i])
+s.beginPath(),s.arc(a,n,o,(i-90.5)*r,(i-89.2)*r),s.strokeStyle=`rgb(${l[0]},${l[1]},${l[2]})`,s.stroke()}}_redrawHueHandle(){const e=this.hueHandleElement.style,t=this.wheelDiameter/2,h=t-this.wheelThickness/2,i=(this._lch[2]-90)*Math.PI/180,s=-this.handleDiameter/2
+e.left=h*Math.cos(i)+t+s+"px",e.top=h*Math.sin(i)+t+s+"px"}_redrawLcSpace(){const e=this._lch[2],h=this.lcSpaceElement,i=h.getContext("2d")
+i.imageSmoothingEnabled=!1
+const s=i.createImageData(h.width,h.height),a=s.data
+let n=0
+for(let h=0;h<s.height;h++)for(let i=0;i<s.width;i++)a.set(t.lch2rgb([100*(s.height-h)/s.height,i*this.maxChroma/s.width,e]),n),a[n+3]=255,n+=4
+i.putImageData(s,0,0)}_redrawLcHandle(){const e=this.lcSpaceElement,t=this.lcHandleElement.style,h=-this.handleDiameter/2
+t.top=e.offsetTop+e.offsetHeight*(1-this._lch[0]/100)+h+"px",t.left=e.offsetLeft+e.offsetWidth*this._lch[1]/this.maxChroma+h+"px"}_requestRedrawLcSpace(){this._requestRedrawLcSpace_||(this._requestRedrawLcSpace_=!0,requestAnimationFrame(()=>{this._requestRedrawLcSpace_=!1,this._redrawLcSpace()}))}}return t.defaultOptions={wheelDiameter:200,wheelThickness:20,handleDiameter:16,maxChroma:132,onChange:Function.prototype},t.lch2rgb=e=>{return function(e){var t,h,i,s=e[0]/100,a=e[1]/100,n=e[2]/100
+return h=-.9689*s+1.8758*a+.0415*n,i=.0557*s+-.204*a+1.057*n,t=(t=3.2406*s+-1.5372*a+-.4986*n)>.0031308?1.055*Math.pow(t,1/2.4)-.055:t*=12.92,h=h>.0031308?1.055*Math.pow(h,1/2.4)-.055:h*=12.92,i=i>.0031308?1.055*Math.pow(i,1/2.4)-.055:i*=12.92,[255*(t=Math.min(Math.max(0,t),1)),255*(h=Math.min(Math.max(0,h),1)),255*(i=Math.min(Math.max(0,i),1))]}((t=function(e){var t,h=e[0],i=e[1]
+return t=e[2]/360*2*Math.PI,[h,i*Math.cos(t),i*Math.sin(t)]}(e),n=t[0],o=t[1],r=t[2],n<=8?a=(i=100*n/903.3)/100*7.787+16/116:(i=100*Math.pow((n+16)/116,3),a=Math.pow(i/100,1/3)),[h=h/95.047<=.008856?h=95.047*(o/500+a-16/116)/7.787:95.047*Math.pow(o/500+a,3),i,s=s/108.883<=.008859?s=108.883*(a-r/200-16/116)/7.787:108.883*Math.pow(a-r/200,3)]))
+var t,h,i,s,a,n,o,r},t}()
