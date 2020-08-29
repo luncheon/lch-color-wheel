@@ -54,10 +54,12 @@ export class LchColorWheel {
         this._requestRedrawLcSpace_ = false;
         this.redraw();
         this.hueWheelElement.addEventListener('pointerdown', event => {
-            const hueWheelElement = event.currentTarget;
-            hueWheelElement.setPointerCapture(event.pointerId);
-            const angle = Math.atan2(event.offsetY - hueWheelElement.height / 2, event.offsetX - hueWheelElement.width / 2);
-            this._setLch(this._lch[0], this._lch[1], (angle * 180) / Math.PI + 90);
+            if (event.button === 0) {
+                const hueWheelElement = event.currentTarget;
+                hueWheelElement.setPointerCapture(event.pointerId);
+                const angle = Math.atan2(event.offsetY - hueWheelElement.height / 2, event.offsetX - hueWheelElement.width / 2);
+                this._setLch(this._lch[0], this._lch[1], (angle * 180) / Math.PI + 90);
+            }
         });
         this.hueWheelElement.addEventListener('pointermove', event => {
             const hueWheelElement = event.currentTarget;
@@ -67,9 +69,11 @@ export class LchColorWheel {
             }
         });
         this.lcSpaceElement.addEventListener('pointerdown', event => {
-            const lcSpaceElement = event.currentTarget;
-            lcSpaceElement.setPointerCapture(event.pointerId);
-            this._setLch(100 - (event.offsetY * 100) / lcSpaceElement.width, (event.offsetX * this.maxChroma) / lcSpaceElement.height, this._lch[2]);
+            if (event.button === 0) {
+                const lcSpaceElement = event.currentTarget;
+                lcSpaceElement.setPointerCapture(event.pointerId);
+                this._setLch(100 - (event.offsetY * 100) / lcSpaceElement.width, (event.offsetX * this.maxChroma) / lcSpaceElement.height, this._lch[2]);
+            }
         });
         this.lcSpaceElement.addEventListener('pointermove', event => {
             const lcSpaceElement = event.currentTarget;
@@ -78,7 +82,9 @@ export class LchColorWheel {
             }
         });
         this.lcHandleElement.addEventListener('pointerdown', event => {
-            this.lcSpaceElement.setPointerCapture(event.pointerId);
+            if (event.button === 0) {
+                this.lcSpaceElement.setPointerCapture(event.pointerId);
+            }
         });
     }
     get lch() {
