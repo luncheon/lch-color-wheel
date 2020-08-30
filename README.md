@@ -1,5 +1,7 @@
 # LCh Color Wheel
 
+<img src="https://luncheon.github.io/lch-color-wheel/capture.png" width="200" height="200">
+
 A wheel-style color picker based on CIE L*C*h color space.
 
 [Demo](https://luncheon.github.io/lch-color-wheel/)
