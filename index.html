@@ -38,29 +38,29 @@
         }
       }
       input {
-        border: none;
         font-family: 'Roboto Mono', monospace;
-        font-size: inherit;
+        font-size: 1.125rem;
         line-height: 1;
-        width: 6em;
         padding: .25em;
+        border: none;
         border-radius: 4px;
         text-align: center;
         color: white;
         text-shadow: 1px 1px 1px black;
+        width: 300px;
+        margin-bottom: 8px;
       }
     </style>
   </head>
-  <body style="margin: 16px 0; text-align: center;">
+  <body style="margin: 16px 0; display: flex; flex-direction: column; align-items: center;">
     <h1>
       <strong>LCh</strong> Color Wheel
     </h1>
     <p>Compare to a <a href="https://luncheon.github.io/reinvented-color-wheel/">HSV Color Wheel</a></p>
     <div id="color-wheel-container" style="line-height: 0; margin: 24px 0;"></div>
     <input id="hex">
-    <aside style="margin: 16px 0;">
-      <a href="https://github.com/luncheon/lch-color-wheel">GitHub</a>
-    </aside>
+    <input id="lch">
+    <a href="https://github.com/luncheon/lch-color-wheel" style="margin: 8px 0;">GitHub</a>
     <script src="index.iife.js"></script>
     <script>
       {
@@ -70,21 +70,46 @@
         const rgb2hex = function (rgb) {
           return '#' + pad(rgb[0].toString(16)) + pad(rgb[1].toString(16)) + pad(rgb[2].toString(16))
         }
+        const lchElement = document.getElementById('lch')
+        const hexElement = document.getElementById('hex')
         const update = function (wheel) {
+          lchElement.value = 'lch(' + wheel.lch[0].toFixed(1) + '% ' + wheel.lch[1].toFixed(1) + ' ' + wheel.lch[2].toFixed(1) + ')'
           const hex = rgb2hex(wheel.rgb)
-          const hexElement = document.getElementById('hex')
           hexElement.value = hex
-          hexElement.style.background = hex
+          lchElement.style.background = hexElement.style.background = hex
           document.getElementsByTagName('h1')[0].style.color = hex
         }
-        window.lchColorWheel = new LchColorWheel({
+        window.colorWheel = new LchColorWheel({
           appendTo: document.getElementById('color-wheel-container'),
           wheelDiameter: 300,
           wheelThickness: 30,
           handleDiameter: 24,
           onChange: update
         })
-        update(lchColorWheel)
+        update(colorWheel)
+        hexElement.addEventListener('input', function () {
+          const s = this.value.replace(/^#/, '')
+          if (s.length === 6) {
+            const r = parseInt(s.slice(0, 2), 16)
+            const g = parseInt(s.slice(2, 4), 16)
+            const b = parseInt(s.slice(4, 6), 16)
+            if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
+              colorWheel.rgb = [r, g, b]
+            }
+          }
+        })
+        lchElement.addEventListener('input', function () {
+          const match = this.value.match(/lch\( *(\d+(?:\.\d*)?)% +(\d+(?:\.\d*)?) +(\d+(?:\.\d*)?) *\)/)
+          console.log(match)
+          if (match) {
+            const l = +match[1]
+            const c = +match[2]
+            const h = +match[3]
+            if (!isNaN(l) && !isNaN(c) && !isNaN(h)) {
+              colorWheel.lch = [l, c, h]
+            }
+          }
+        })
       }
     </script>
   </body>
