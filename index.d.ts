@@ -10,6 +10,7 @@ export declare class LchColorWheel {
         onChange: (lchColorWheel: LchColorWheel) => unknown;
     };
     static readonly lch2rgb: (lch: ArrayLike<number>) => [number, number, number];
+    static readonly rgb2lch: (rgb: ArrayLike<number>) => [number, number, number];
     readonly wheelDiameter: number;
     readonly wheelThickness: number;
     readonly handleDiameter: number;
@@ -20,10 +21,12 @@ export declare class LchColorWheel {
     readonly hueHandleElement: HTMLDivElement;
     readonly lcSpaceElement: HTMLCanvasElement;
     readonly lcHandleElement: HTMLDivElement;
+    private _rgb;
     private _lch;
     get lch(): [number, number, number];
     set lch(lch: [number, number, number]);
     get rgb(): [number, number, number];
+    set rgb(rgb: [number, number, number]);
     constructor(options: Readonly<Partial<typeof LchColorWheel.defaultOptions> & {
         appendTo: HTMLElement;
     }>);

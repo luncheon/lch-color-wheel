@@ -1,5 +1,8 @@
+import lab2lch from 'pure-color/convert/lab2lch'
 import lab2xyz from 'pure-color/convert/lab2xyz'
 import lch2lab from 'pure-color/convert/lch2lab'
+import rgb2xyz from 'pure-color/convert/rgb2xyz'
+import xyz2lab from 'pure-color/convert/xyz2lab'
 import xyz2rgb from 'pure-color/convert/xyz2rgb'
 
 const createElement = <K extends keyof HTMLElementTagNameMap>(
@@ -19,10 +22,11 @@ export class LchColorWheel {
     wheelDiameter: 200,
     wheelThickness: 20,
     handleDiameter: 16,
-    maxChroma: 132,
+    maxChroma: 134,
     onChange: Function.prototype as (lchColorWheel: LchColorWheel) => unknown,
   }
   static readonly lch2rgb = (lch: ArrayLike<number>) => xyz2rgb(lab2xyz(lch2lab(lch)))
+  static readonly rgb2lch = (rgb: ArrayLike<number>) => lab2lch(xyz2lab(rgb2xyz(rgb)))
 
   readonly wheelDiameter = this.options.wheelDiameter || LchColorWheel.defaultOptions.wheelDiameter
   readonly wheelThickness = this.options.wheelThickness || LchColorWheel.defaultOptions.wheelThickness
@@ -65,7 +69,8 @@ export class LchColorWheel {
     boxShadow: '0 0 0 1px black inset',
   })
 
-  private _lch: [number, number, number] = [50, this.maxChroma, 0]
+  private _rgb: [number, number, number] = [255, 0, 0]
+  private _lch: [number, number, number] = LchColorWheel.rgb2lch(this._rgb)
 
   get lch(): [number, number, number] {
     return this._lch
@@ -75,8 +80,10 @@ export class LchColorWheel {
   }
 
   get rgb(): [number, number, number] {
-    const rgb = LchColorWheel.lch2rgb(this._lch)
-    return [Math.round(rgb[0]), Math.round(rgb[1]), Math.round(rgb[2])]
+    return this._rgb
+  }
+  set rgb(rgb) {
+    this._setLch.apply(this, LchColorWheel.rgb2lch(rgb))
   }
 
   constructor(readonly options: Readonly<Partial<typeof LchColorWheel.defaultOptions> & { appendTo: HTMLElement }>) {
@@ -138,6 +145,8 @@ export class LchColorWheel {
       this._requestRedrawLcSpace()
     }
     if (lch[0] !== old[0] || lch[1] !== old[1] || lch[2] !== old[2]) {
+      const rgb = LchColorWheel.lch2rgb(this._lch)
+      this._rgb = [Math.round(rgb[0]), Math.round(rgb[1]), Math.round(rgb[2])]
       this.onChange(this)
     }
   }

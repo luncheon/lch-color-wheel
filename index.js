@@ -1,5 +1,8 @@
+import lab2lch from 'pure-color/convert/lab2lch';
 import lab2xyz from 'pure-color/convert/lab2xyz';
 import lch2lab from 'pure-color/convert/lch2lab';
+import rgb2xyz from 'pure-color/convert/rgb2xyz';
+import xyz2lab from 'pure-color/convert/xyz2lab';
 import xyz2rgb from 'pure-color/convert/xyz2rgb';
 const createElement = (parentElement, tag, style) => {
     const element = parentElement.appendChild(document.createElement(tag));
@@ -50,7 +53,8 @@ export class LchColorWheel {
             border: '2px solid white',
             boxShadow: '0 0 0 1px black inset',
         });
-        this._lch = [50, this.maxChroma, 0];
+        this._rgb = [255, 0, 0];
+        this._lch = LchColorWheel.rgb2lch(this._rgb);
         this._requestRedrawLcSpace_ = false;
         this.redraw();
         this.hueWheelElement.addEventListener('pointerdown', event => {
@@ -94,8 +98,10 @@ export class LchColorWheel {
         this._setLch(lch[0], lch[1], lch[2]);
     }
     get rgb() {
-        const rgb = LchColorWheel.lch2rgb(this._lch);
-        return [Math.round(rgb[0]), Math.round(rgb[1]), Math.round(rgb[2])];
+        return this._rgb;
+    }
+    set rgb(rgb) {
+        this._setLch.apply(this, LchColorWheel.rgb2lch(rgb));
     }
     _setLch(l, c, h) {
         const old = [...this._lch];
@@ -109,6 +115,8 @@ export class LchColorWheel {
             this._requestRedrawLcSpace();
         }
         if (lch[0] !== old[0] || lch[1] !== old[1] || lch[2] !== old[2]) {
+            const rgb = LchColorWheel.lch2rgb(this._lch);
+            this._rgb = [Math.round(rgb[0]), Math.round(rgb[1]), Math.round(rgb[2])];
             this.onChange(this);
         }
     }
@@ -187,7 +195,8 @@ LchColorWheel.defaultOptions = {
     wheelDiameter: 200,
     wheelThickness: 20,
     handleDiameter: 16,
-    maxChroma: 132,
+    maxChroma: 134,
     onChange: Function.prototype,
 };
 LchColorWheel.lch2rgb = (lch) => xyz2rgb(lab2xyz(lch2lab(lch)));
+LchColorWheel.rgb2lch = (rgb) => lab2lch(xyz2lab(rgb2xyz(rgb)));
