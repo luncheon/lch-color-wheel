@@ -11,11 +11,11 @@ export declare class LchColorWheel {
     };
     static readonly lch2rgb: (lch: ArrayLike<number>) => [number, number, number];
     static readonly rgb2lch: (rgb: ArrayLike<number>) => [number, number, number];
-    readonly wheelDiameter: number;
-    readonly wheelThickness: number;
-    readonly handleDiameter: number;
+    wheelDiameter: number;
+    wheelThickness: number;
+    handleDiameter: number;
     readonly maxChroma: number;
-    readonly onChange: (lchColorWheel: LchColorWheel) => unknown;
+    onChange: (lchColorWheel: LchColorWheel) => unknown;
     readonly rootElement: HTMLDivElement;
     readonly hueWheelElement: HTMLCanvasElement;
     readonly hueHandleElement: HTMLDivElement;

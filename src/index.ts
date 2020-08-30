@@ -28,11 +28,11 @@ export class LchColorWheel {
   static readonly lch2rgb = (lch: ArrayLike<number>) => xyz2rgb(lab2xyz(lch2lab(lch)))
   static readonly rgb2lch = (rgb: ArrayLike<number>) => lab2lch(xyz2lab(rgb2xyz(rgb)))
 
-  readonly wheelDiameter = this.options.wheelDiameter || LchColorWheel.defaultOptions.wheelDiameter
-  readonly wheelThickness = this.options.wheelThickness || LchColorWheel.defaultOptions.wheelThickness
-  readonly handleDiameter = this.options.handleDiameter || LchColorWheel.defaultOptions.handleDiameter
+  wheelDiameter = this.options.wheelDiameter || LchColorWheel.defaultOptions.wheelDiameter
+  wheelThickness = this.options.wheelThickness || LchColorWheel.defaultOptions.wheelThickness
+  handleDiameter = this.options.handleDiameter || LchColorWheel.defaultOptions.handleDiameter
   readonly maxChroma = this.options.maxChroma || LchColorWheel.defaultOptions.maxChroma
-  readonly onChange = this.options.onChange || LchColorWheel.defaultOptions.onChange
+  onChange = this.options.onChange || LchColorWheel.defaultOptions.onChange
 
   readonly rootElement = createElement(this.options.appendTo, 'div', {
     position: 'relative',
