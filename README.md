@@ -2,13 +2,34 @@
 
 <img src="https://luncheon.github.io/lch-color-wheel/capture.png" width="200" height="200">
 
-A wheel-style color picker based on CIE L*C*h color space.
+A wheel-style color picker based on CIE L\*C\*h color space.
 
 [Demo](https://luncheon.github.io/lch-color-wheel/)
 
 ## Installation
 
-T.B.D.
+### [npm](https://www.npmjs.com/package/lch-color-wheel)
+
+```bash
+$ npm i lch-color-wheel
+```
+
+```javascript
+import { LchColorWheel } from 'lch-color-wheel'
+```
+
+### CDN ([jsDelivr](https://www.jsdelivr.com/package/npm/reinvented-color-wheel))
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/lch-color-wheel@0.1.0"></script>
+<script>
+  /* `window.LchColorWheel` object is available */
+</script>
+```
+
+### Download directly
+
+<a target="_blank" download="lch-color-wheel.iife.js"  href="https://cdn.jsdelivr.net/npm/lch-color-wheel@0.1.0/index.iife.js">lch-color-wheel.iife.js</a>
 
 ## Usage
 

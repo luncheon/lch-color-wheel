@@ -1,7 +1,7 @@
 {
   "name": "lch-color-wheel",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "A wheel-style color picker based on CIE L*C*h color space.",
   "license": "WTFPL",
   "repository": "luncheon/lch-color-wheel",
   "module": "index.js",
