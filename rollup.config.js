@@ -7,7 +7,7 @@ export default {
   output: {
     format: 'iife',
     name: 'LchColorWheel',
-    file: 'index.iife.js',
+    file: 'index.iife.min.js',
   },
   plugins: [resolve(), commonjs(), terser({ warnings: true, output: { semicolons: false }, compress: { passes: 2 } })],
 }

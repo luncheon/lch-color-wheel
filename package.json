@@ -5,8 +5,8 @@
   "license": "WTFPL",
   "repository": "luncheon/lch-color-wheel",
   "module": "index.js",
-  "jsdelivr": "index.iife.js",
-  "unpkg": "index.iife.js",
+  "jsdelivr": "index.iife.min.js",
+  "unpkg": "index.iife.min.js",
   "keywords": [
     "color",
     "picker",

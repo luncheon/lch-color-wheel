@@ -29,7 +29,7 @@ import { LchColorWheel } from 'lch-color-wheel'
 
 ### Download directly
 
-<a target="_blank" download="lch-color-wheel.iife.js"  href="https://cdn.jsdelivr.net/npm/lch-color-wheel@0.2.0/index.iife.js">lch-color-wheel.iife.js</a>
+<a target="_blank" download="lch-color-wheel.iife.min.js"  href="https://cdn.jsdelivr.net/npm/lch-color-wheel@0.2.0">lch-color-wheel.iife.min.js</a>
 
 ## Usage
 
