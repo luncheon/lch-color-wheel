@@ -3,7 +3,49 @@ import lab2xyz from 'pure-color/convert/lab2xyz'
 import lch2lab from 'pure-color/convert/lch2lab'
 import rgb2xyz from 'pure-color/convert/rgb2xyz'
 import xyz2lab from 'pure-color/convert/xyz2lab'
-import xyz2rgb from 'pure-color/convert/xyz2rgb'
+
+const rgb2lch = (rgb: readonly [number, number, number]) => lab2lch(xyz2lab(rgb2xyz(rgb)))
+
+const rgb2srgb = (r: number) => Math.round(256 * (r > 0.0031308 ? 1.055 * r ** (1.0 / 2.4) - 0.055 : r * 12.92))
+
+const xyz2rgb = (xyz: readonly [number, number, number]): [number, number, number] => {
+  const x = xyz[0] * 0.01
+  const y = xyz[1] * 0.01
+  const z = xyz[2] * 0.01
+
+  const r = x * 3.2406 + y * -1.5372 + z * -0.4986
+  const g = x * -0.9689 + y * 1.8758 + z * 0.0415
+  const b = x * 0.0557 + y * -0.204 + z * 1.057
+
+  return [rgb2srgb(r), rgb2srgb(g), rgb2srgb(b)]
+}
+
+const lch2rgbRaw = (lch: readonly [number, number, number]) => xyz2rgb(lab2xyz(lch2lab(lch)))
+const isRgbValid = (rgb: readonly [number, number, number]) =>
+  0 <= rgb[0] && rgb[0] <= 255 && 0 <= rgb[1] && rgb[1] <= 255 && 0 <= rgb[2] && rgb[2] <= 255
+
+const lch2rgb = (lch: readonly [number, number, number]): [number, number, number] => {
+  let rgb = lch2rgbRaw(lch)
+  if (isRgbValid(rgb)) {
+    return rgb
+  }
+  let validMinimumChroma = 0
+  let invalidMinimumChroma = lch[1]
+  let previousRgb
+  const _lch: [number, number, number] = [lch[0], lch[1] * 0.5, lch[2]]
+  do {
+    previousRgb = rgb
+    rgb = lch2rgbRaw(_lch)
+    if (isRgbValid(rgb)) {
+      validMinimumChroma = _lch[1]
+      _lch[1] = (_lch[1] + invalidMinimumChroma) * 0.5
+    } else {
+      invalidMinimumChroma = _lch[1]
+      _lch[1] = (_lch[1] + validMinimumChroma) * 0.5
+    }
+  } while (previousRgb[0] !== rgb[0] || previousRgb[1] !== rgb[1] || previousRgb[2] !== rgb[2])
+  return [Math.max(0, Math.min(255, rgb[0])), Math.max(0, Math.min(255, rgb[1])), Math.max(0, Math.min(255, rgb[2]))]
+}
 
 const createElement = <K extends keyof HTMLElementTagNameMap>(
   parentElement: HTMLElement,
@@ -25,8 +67,6 @@ export class LchColorWheel {
     maxChroma: 134,
     onChange: Function.prototype as (lchColorWheel: LchColorWheel) => unknown,
   }
-  static readonly lch2rgb = (lch: ArrayLike<number>) => xyz2rgb(lab2xyz(lch2lab(lch)))
-  static readonly rgb2lch = (rgb: ArrayLike<number>) => lab2lch(xyz2lab(rgb2xyz(rgb)))
 
   wheelDiameter = this.options.wheelDiameter || LchColorWheel.defaultOptions.wheelDiameter
   wheelThickness = this.options.wheelThickness || LchColorWheel.defaultOptions.wheelThickness
@@ -70,7 +110,7 @@ export class LchColorWheel {
   })
 
   private _rgb: [number, number, number] = [255, 0, 0]
-  private _lch: [number, number, number] = LchColorWheel.rgb2lch(this._rgb)
+  private _lch: [number, number, number] = rgb2lch(this._rgb)
 
   get lch(): [number, number, number] {
     return this._lch
@@ -83,7 +123,7 @@ export class LchColorWheel {
     return this._rgb
   }
   set rgb(rgb) {
-    this._setLch.apply(this, LchColorWheel.rgb2lch(rgb))
+    this._setLch.apply(this, rgb2lch(rgb))
   }
 
   constructor(readonly options: Readonly<Partial<typeof LchColorWheel.defaultOptions> & { appendTo: HTMLElement }>) {
@@ -134,7 +174,7 @@ export class LchColorWheel {
   }
 
   private _setLch(l: number, c: number, h: number) {
-    const old = [...this._lch]
+    const old = this._lch
     const lch = (this._lch = [Math.max(0, Math.min(100, l)), Math.max(0, Math.min(this.maxChroma, c)), (h % 360) + (h < 0 ? 360 : 0)])
     if (lch[0] !== old[0] || lch[1] !== old[1]) {
       this._redrawLcHandle()
@@ -145,7 +185,7 @@ export class LchColorWheel {
       this._requestRedrawLcSpace()
     }
     if (lch[0] !== old[0] || lch[1] !== old[1] || lch[2] !== old[2]) {
-      const rgb = LchColorWheel.lch2rgb(this._lch)
+      const rgb = lch2rgb(this._lch)
       this._rgb = [Math.round(rgb[0]), Math.round(rgb[1]), Math.round(rgb[2])]
       this.onChange(this)
     }
@@ -173,7 +213,7 @@ export class LchColorWheel {
     const r = cx - this.wheelThickness / 2
     const TO_RAD = Math.PI / 180
     for (let h = 0; h < 360; h++) {
-      const rgb = LchColorWheel.lch2rgb([l, c, h])
+      const rgb = lch2rgb([l, c, h])
       context.beginPath()
       context.arc(cx, cy, r, (h - 90.5) * TO_RAD, (h - 89.2) * TO_RAD)
       context.strokeStyle = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`
@@ -200,8 +240,18 @@ export class LchColorWheel {
     const data = imageData.data
     let p = 0
     for (let y = 0; y < imageData.height; y++) {
+      let rgb
       for (let x = 0; x < imageData.width; x++) {
-        data.set(LchColorWheel.lch2rgb([((imageData.height - y) * 100) / imageData.height, (x * this.maxChroma) / imageData.width, h]), p)
+        const lch = [((imageData.height - y) * 100) / imageData.height, (x * this.maxChroma) / imageData.width, h] as const
+        if (rgb) {
+          const currentRgb = lch2rgbRaw(lch)
+          if (isRgbValid(currentRgb)) {
+            rgb = currentRgb
+          }
+        } else {
+          rgb = lch2rgb(lch)
+        }
+        data.set(rgb, p)
         data[p + 3] = 255
         p += 4
       }

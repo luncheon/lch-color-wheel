@@ -9,8 +9,6 @@ export declare class LchColorWheel {
         maxChroma: number;
         onChange: (lchColorWheel: LchColorWheel) => unknown;
     };
-    static readonly lch2rgb: (lch: ArrayLike<number>) => [number, number, number];
-    static readonly rgb2lch: (rgb: ArrayLike<number>) => [number, number, number];
     wheelDiameter: number;
     wheelThickness: number;
     handleDiameter: number;
