@@ -21,7 +21,7 @@ import { LchColorWheel } from 'lch-color-wheel'
 ### CDN ([jsDelivr](https://www.jsdelivr.com/package/npm/reinvented-color-wheel))
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lch-color-wheel@0.1.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/lch-color-wheel@0.2.0"></script>
 <script>
   /* `window.LchColorWheel` object is available */
 </script>
@@ -29,7 +29,7 @@ import { LchColorWheel } from 'lch-color-wheel'
 
 ### Download directly
 
-<a target="_blank" download="lch-color-wheel.iife.js"  href="https://cdn.jsdelivr.net/npm/lch-color-wheel@0.1.1/index.iife.js">lch-color-wheel.iife.js</a>
+<a target="_blank" download="lch-color-wheel.iife.js"  href="https://cdn.jsdelivr.net/npm/lch-color-wheel@0.2.0/index.iife.js">lch-color-wheel.iife.js</a>
 
 ## Usage
 
