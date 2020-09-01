@@ -58,9 +58,16 @@
     </h1>
     <p>Compare to a <a href="https://luncheon.github.io/reinvented-color-wheel/">HSV Color Wheel</a></p>
     <div id="color-wheel-container" style="line-height: 0; margin: 24px 0;"></div>
-    <input id="hex">
     <input id="lch">
+    <input id="hsl">
+    <input id="rgb">
+    <input id="hex">
     <a href="https://github.com/luncheon/lch-color-wheel" style="margin: 8px 0;">GitHub</a>
+    <script>window.module = {}</script>
+    <script src="https://cdn.jsdelivr.net/npm/pure-color@1.3.0/convert/rgb2hsl.js"></script>
+    <script>window.rgb2hsl = module.exports</script>
+    <script src="https://cdn.jsdelivr.net/npm/pure-color@1.3.0/convert/hsl2rgb.js"></script>
+    <script>window.hsl2rgb = module.exports</script>
     <script src="https://cdn.jsdelivr.net/npm/lch-color-wheel@0.2.1"></script>
     <script>
       {
@@ -71,12 +78,17 @@
           return '#' + pad(rgb[0].toString(16)) + pad(rgb[1].toString(16)) + pad(rgb[2].toString(16))
         }
         const lchElement = document.getElementById('lch')
+        const hslElement = document.getElementById('hsl')
+        const rgbElement = document.getElementById('rgb')
         const hexElement = document.getElementById('hex')
         const update = function (wheel) {
-          lchElement.value = 'lch(' + wheel.lch[0].toFixed(1) + '% ' + wheel.lch[1].toFixed(1) + ' ' + wheel.lch[2].toFixed(1) + ')'
+          lchElement.value = 'lch(' + wheel.lch[0].toFixed(1) + '%, ' + wheel.lch[1].toFixed(1) + ', ' + wheel.lch[2].toFixed(1) + ')'
+          rgbElement.value = 'rgb(' + wheel.rgb[0] + ', ' + wheel.rgb[1] + ', ' + wheel.rgb[2] + ')'
+          const hsl = rgb2hsl(wheel.rgb)
+          hslElement.value = 'hsl(' + hsl[0].toFixed(1) + ', ' + hsl[1].toFixed(1) + '%, ' + hsl[2].toFixed(1) + '%)'
           const hex = rgb2hex(wheel.rgb)
           hexElement.value = hex
-          lchElement.style.background = hexElement.style.background = hex
+          lchElement.style.background = hslElement.style.background = rgbElement.style.background = hexElement.style.background = hex
           document.getElementsByTagName('h1')[0].style.color = hex
         }
         window.colorWheel = new LchColorWheel({
@@ -87,6 +99,38 @@
           onChange: update
         })
         update(colorWheel)
+
+        lchElement.addEventListener('input', function () {
+          const match = this.value.match(/lch\( *(\d+(?:\.\d*)?)%?[, ] *(\d+(?:\.\d*)?)[, ] *(\d+(?:\.\d*)?) *\)/)
+          if (match) {
+            const lch = [+match[1], +match[2], +match[3]]
+            if (!isNaN(lch[0]) && !isNaN(lch[1]) && !isNaN(lch[2])) {
+              colorWheel.lch = lch
+            }
+          }
+        })
+        hslElement.addEventListener('input', function () {
+          const match = this.value.match(/hsl\( *(\d+(?:\.\d*)?)[, ] *(\d+(?:\.\d*)?)%?[, ] *(\d+(?:\.\d*)?)%? *\)/)
+          if (match) {
+            const h = +match[1]
+            const s = +match[2]
+            const l = +match[3]
+            if (!isNaN(h) && !isNaN(s) && !isNaN(l)) {
+              colorWheel.rgb = hsl2rgb(h, s, l)
+            }
+          }
+        })
+        rgbElement.addEventListener('input', function () {
+          const match = this.value.match(/rgb\( *(\d+(?:\.\d*)?)[, ] *(\d+(?:\.\d*)?)[, ] *(\d+(?:\.\d*)?) *\)/)
+          if (match) {
+            const r = +match[1]
+            const g = +match[2]
+            const b = +match[3]
+            if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
+              colorWheel.rgb = [r, g, b]
+            }
+          }
+        })
         hexElement.addEventListener('input', function () {
           const s = this.value.replace(/^#/, '')
           if (s.length === 6) {
@@ -95,18 +139,6 @@
             const b = parseInt(s.slice(4, 6), 16)
             if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
               colorWheel.rgb = [r, g, b]
-            }
-          }
-        })
-        lchElement.addEventListener('input', function () {
-          const match = this.value.match(/lch\( *(\d+(?:\.\d*)?)% +(\d+(?:\.\d*)?) +(\d+(?:\.\d*)?) *\)/)
-          console.log(match)
-          if (match) {
-            const l = +match[1]
-            const c = +match[2]
-            const h = +match[3]
-            if (!isNaN(l) && !isNaN(c) && !isNaN(h)) {
-              colorWheel.lch = [l, c, h]
             }
           }
         })
