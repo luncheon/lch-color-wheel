@@ -18,7 +18,7 @@ $ npm i lch-color-wheel
 import { LchColorWheel } from 'lch-color-wheel'
 ```
 
-### CDN ([jsDelivr](https://www.jsdelivr.com/package/npm/reinvented-color-wheel))
+### CDN ([jsDelivr](https://www.jsdelivr.com/package/npm/lch-color-wheel))
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/lch-color-wheel@0.2.1"></script>
