@@ -64,6 +64,7 @@ export class LchColorWheel {
     wheelDiameter: 200,
     wheelThickness: 20,
     handleDiameter: 16,
+    drawsValidityBoundary: true,
     maxChroma: 134,
     onChange: Function.prototype as (lchColorWheel: LchColorWheel) => unknown,
   }
@@ -71,6 +72,7 @@ export class LchColorWheel {
   wheelDiameter = this.options.wheelDiameter || LchColorWheel.defaultOptions.wheelDiameter
   wheelThickness = this.options.wheelThickness || LchColorWheel.defaultOptions.wheelThickness
   handleDiameter = this.options.handleDiameter || LchColorWheel.defaultOptions.handleDiameter
+  drawsValidityBoundary = this.options.drawsValidityBoundary || LchColorWheel.defaultOptions.drawsValidityBoundary
   readonly maxChroma = this.options.maxChroma || LchColorWheel.defaultOptions.maxChroma
   onChange = this.options.onChange || LchColorWheel.defaultOptions.onChange
 
@@ -239,14 +241,19 @@ export class LchColorWheel {
     const imageData = context.createImageData(canvas.width, canvas.height)
     const data = imageData.data
     let p = 0
+    const yToOverflowXMap = []
     for (let y = 0; y < imageData.height; y++) {
-      let rgb
+      let rgb: [number, number, number] | undefined
+      let overflow: 1 | undefined
       for (let x = 0; x < imageData.width; x++) {
         const lch = [((imageData.height - y) * 100) / imageData.height, (x * this.maxChroma) / imageData.width, h] as const
         if (rgb) {
           const currentRgb = lch2rgbRaw(lch)
           if (isRgbValid(currentRgb)) {
             rgb = currentRgb
+          } else if (!overflow) {
+            overflow = 1
+            yToOverflowXMap[y] = x
           }
         } else {
           rgb = lch2rgb(lch)
@@ -257,6 +264,16 @@ export class LchColorWheel {
       }
     }
     context.putImageData(imageData, 0, 0)
+    if (this.drawsValidityBoundary) {
+      context.beginPath()
+      context.moveTo(yToOverflowXMap[0], 0)
+      for (let y = 1; y < imageData.height; y++) {
+        context.lineTo(yToOverflowXMap[y], y)
+      }
+      context.strokeStyle = '#fff'
+      context.lineWidth = 1.25
+      context.stroke()
+    }
   }
 
   private _redrawLcHandle() {
@@ -267,12 +284,12 @@ export class LchColorWheel {
     lcHandleStyle.left = `${lcSpaceElement.offsetLeft + (lcSpaceElement.offsetWidth * this._lch[1]) / this.maxChroma + offset}px`
   }
 
-  private _requestRedrawLcSpace_ = false
+  private _requestRedrawLcSpace_ = 0
   private _requestRedrawLcSpace() {
     if (!this._requestRedrawLcSpace_) {
-      this._requestRedrawLcSpace_ = true
+      this._requestRedrawLcSpace_ = 1
       requestAnimationFrame(() => {
-        this._requestRedrawLcSpace_ = false
+        this._requestRedrawLcSpace_ = 0
         this._redrawLcSpace()
       })
     }

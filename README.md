@@ -43,6 +43,7 @@ var colorWheel = new LchColorWheel({
   wheelDiameter: 200,
   wheelThickness: 20,
   handleDiameter: 16,
+  drawsValidityBoundary: true,
 
   onChange: function (colorWheel) {
     // the only argument is the LchColorWheel instance itself.

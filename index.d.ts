@@ -6,12 +6,14 @@ export declare class LchColorWheel {
         wheelDiameter: number;
         wheelThickness: number;
         handleDiameter: number;
+        drawsValidityBoundary: boolean;
         maxChroma: number;
         onChange: (lchColorWheel: LchColorWheel) => unknown;
     };
     wheelDiameter: number;
     wheelThickness: number;
     handleDiameter: number;
+    drawsValidityBoundary: boolean;
     readonly maxChroma: number;
     onChange: (lchColorWheel: LchColorWheel) => unknown;
     readonly rootElement: HTMLDivElement;

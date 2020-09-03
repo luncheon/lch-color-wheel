@@ -52,6 +52,7 @@ export class LchColorWheel {
         this.wheelDiameter = this.options.wheelDiameter || LchColorWheel.defaultOptions.wheelDiameter;
         this.wheelThickness = this.options.wheelThickness || LchColorWheel.defaultOptions.wheelThickness;
         this.handleDiameter = this.options.handleDiameter || LchColorWheel.defaultOptions.handleDiameter;
+        this.drawsValidityBoundary = this.options.drawsValidityBoundary || LchColorWheel.defaultOptions.drawsValidityBoundary;
         this.maxChroma = this.options.maxChroma || LchColorWheel.defaultOptions.maxChroma;
         this.onChange = this.options.onChange || LchColorWheel.defaultOptions.onChange;
         this.rootElement = createElement(this.options.appendTo, 'div', {
@@ -90,7 +91,7 @@ export class LchColorWheel {
         });
         this._rgb = [255, 0, 0];
         this._lch = rgb2lch(this._rgb);
-        this._requestRedrawLcSpace_ = false;
+        this._requestRedrawLcSpace_ = 0;
         this.redraw();
         this.hueWheelElement.addEventListener('pointerdown', event => {
             if (event.button === 0) {
@@ -200,14 +201,20 @@ export class LchColorWheel {
         const imageData = context.createImageData(canvas.width, canvas.height);
         const data = imageData.data;
         let p = 0;
+        const yToOverflowXMap = [];
         for (let y = 0; y < imageData.height; y++) {
             let rgb;
+            let overflow;
             for (let x = 0; x < imageData.width; x++) {
                 const lch = [((imageData.height - y) * 100) / imageData.height, (x * this.maxChroma) / imageData.width, h];
                 if (rgb) {
                     const currentRgb = lch2rgbRaw(lch);
                     if (isRgbValid(currentRgb)) {
                         rgb = currentRgb;
+                    }
+                    else if (!overflow) {
+                        overflow = 1;
+                        yToOverflowXMap[y] = x;
                     }
                 }
                 else {
@@ -219,6 +226,16 @@ export class LchColorWheel {
             }
         }
         context.putImageData(imageData, 0, 0);
+        if (this.drawsValidityBoundary) {
+            context.beginPath();
+            context.moveTo(yToOverflowXMap[0], 0);
+            for (let y = 1; y < imageData.height; y++) {
+                context.lineTo(yToOverflowXMap[y], y);
+            }
+            context.strokeStyle = '#fff';
+            context.lineWidth = 1.25;
+            context.stroke();
+        }
     }
     _redrawLcHandle() {
         const lcSpaceElement = this.lcSpaceElement;
@@ -229,9 +246,9 @@ export class LchColorWheel {
     }
     _requestRedrawLcSpace() {
         if (!this._requestRedrawLcSpace_) {
-            this._requestRedrawLcSpace_ = true;
+            this._requestRedrawLcSpace_ = 1;
             requestAnimationFrame(() => {
-                this._requestRedrawLcSpace_ = false;
+                this._requestRedrawLcSpace_ = 0;
                 this._redrawLcSpace();
             });
         }
@@ -241,6 +258,7 @@ LchColorWheel.defaultOptions = {
     wheelDiameter: 200,
     wheelThickness: 20,
     handleDiameter: 16,
+    drawsValidityBoundary: true,
     maxChroma: 134,
     onChange: Function.prototype,
 };
