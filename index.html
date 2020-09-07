@@ -65,14 +65,12 @@
     </style>
   </head>
   <body style="margin: 16px 0; display: flex; flex-direction: column; align-items: center;">
-    <h1>
-      <strong>LCh</strong> Color Wheel
-    </h1>
+    <h1><strong>LCh</strong> Color Wheel</h1>
     <p>Compare to a <a href="https://luncheon.github.io/reinvented-color-wheel/">HSV Color Wheel</a></p>
     <div id="color-wheel-container" style="line-height: 0; margin: 24px 0;"></div>
     <label>
-      <input type="checkbox" checked onchange="colorWheel.drawsValidityBoundary=this.checked;colorWheel.redraw()">
-      Draws Validity Boundary
+      <input type="checkbox" onchange="colorWheel.drawsRgbValidityBoundary=this.checked;colorWheel.redraw()">
+      Draws sRGB Validity Boundary
     </label>
     <input id="lch">
     <input id="hsl">

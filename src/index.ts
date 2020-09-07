@@ -64,7 +64,7 @@ export class LchColorWheel {
     wheelDiameter: 200,
     wheelThickness: 20,
     handleDiameter: 16,
-    drawsValidityBoundary: true,
+    drawsRgbValidityBoundary: false,
     maxChroma: 134,
     onChange: Function.prototype as (lchColorWheel: LchColorWheel) => unknown,
   }
@@ -72,7 +72,7 @@ export class LchColorWheel {
   wheelDiameter = this.options.wheelDiameter || LchColorWheel.defaultOptions.wheelDiameter
   wheelThickness = this.options.wheelThickness || LchColorWheel.defaultOptions.wheelThickness
   handleDiameter = this.options.handleDiameter || LchColorWheel.defaultOptions.handleDiameter
-  drawsValidityBoundary = this.options.drawsValidityBoundary || LchColorWheel.defaultOptions.drawsValidityBoundary
+  drawsRgbValidityBoundary = this.options.drawsRgbValidityBoundary || LchColorWheel.defaultOptions.drawsRgbValidityBoundary
   readonly maxChroma = this.options.maxChroma || LchColorWheel.defaultOptions.maxChroma
   onChange = this.options.onChange || LchColorWheel.defaultOptions.onChange
 
@@ -264,7 +264,7 @@ export class LchColorWheel {
       }
     }
     context.putImageData(imageData, 0, 0)
-    if (this.drawsValidityBoundary) {
+    if (this.drawsRgbValidityBoundary) {
       context.beginPath()
       context.moveTo(yToOverflowXMap[0], 0)
       for (let y = 1; y < imageData.height; y++) {

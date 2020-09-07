@@ -52,7 +52,7 @@ export class LchColorWheel {
         this.wheelDiameter = this.options.wheelDiameter || LchColorWheel.defaultOptions.wheelDiameter;
         this.wheelThickness = this.options.wheelThickness || LchColorWheel.defaultOptions.wheelThickness;
         this.handleDiameter = this.options.handleDiameter || LchColorWheel.defaultOptions.handleDiameter;
-        this.drawsValidityBoundary = this.options.drawsValidityBoundary || LchColorWheel.defaultOptions.drawsValidityBoundary;
+        this.drawsRgbValidityBoundary = this.options.drawsRgbValidityBoundary || LchColorWheel.defaultOptions.drawsRgbValidityBoundary;
         this.maxChroma = this.options.maxChroma || LchColorWheel.defaultOptions.maxChroma;
         this.onChange = this.options.onChange || LchColorWheel.defaultOptions.onChange;
         this.rootElement = createElement(this.options.appendTo, 'div', {
@@ -226,7 +226,7 @@ export class LchColorWheel {
             }
         }
         context.putImageData(imageData, 0, 0);
-        if (this.drawsValidityBoundary) {
+        if (this.drawsRgbValidityBoundary) {
             context.beginPath();
             context.moveTo(yToOverflowXMap[0], 0);
             for (let y = 1; y < imageData.height; y++) {
@@ -258,7 +258,7 @@ LchColorWheel.defaultOptions = {
     wheelDiameter: 200,
     wheelThickness: 20,
     handleDiameter: 16,
-    drawsValidityBoundary: true,
+    drawsRgbValidityBoundary: false,
     maxChroma: 134,
     onChange: Function.prototype,
 };
