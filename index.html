@@ -112,7 +112,7 @@
         })
         update(colorWheel)
 
-        lchElement.addEventListener('input', function () {
+        lchElement.addEventListener('change', function () {
           const match = this.value.match(/lch\( *(\d+(?:\.\d*)?)%?[, ] *(\d+(?:\.\d*)?)[, ] *(\d+(?:\.\d*)?) *\)/)
           if (match) {
             const lch = [+match[1], +match[2], +match[3]]
@@ -121,7 +121,7 @@
             }
           }
         })
-        hslElement.addEventListener('input', function () {
+        hslElement.addEventListener('change', function () {
           const match = this.value.match(/hsl\( *(\d+(?:\.\d*)?)[, ] *(\d+(?:\.\d*)?)%?[, ] *(\d+(?:\.\d*)?)%? *\)/)
           if (match) {
             const h = +match[1]
@@ -132,7 +132,7 @@
             }
           }
         })
-        rgbElement.addEventListener('input', function () {
+        rgbElement.addEventListener('change', function () {
           const match = this.value.match(/rgb\( *(\d+(?:\.\d*)?)[, ] *(\d+(?:\.\d*)?)[, ] *(\d+(?:\.\d*)?) *\)/)
           if (match) {
             const r = +match[1]
@@ -143,7 +143,7 @@
             }
           }
         })
-        hexElement.addEventListener('input', function () {
+        hexElement.addEventListener('change', function () {
           const s = this.value.replace(/^#/, '')
           if (s.length === 6) {
             const r = parseInt(s.slice(0, 2), 16)
