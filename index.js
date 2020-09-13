@@ -4,7 +4,7 @@ import lch2lab from 'pure-color/convert/lch2lab';
 import rgb2xyz from 'pure-color/convert/rgb2xyz';
 import xyz2lab from 'pure-color/convert/xyz2lab';
 const rgb2lch = (rgb) => lab2lch(xyz2lab(rgb2xyz(rgb)));
-const rgb2srgb = (r) => Math.round(256 * (r > 0.0031308 ? 1.055 * r ** (1.0 / 2.4) - 0.055 : r * 12.92));
+const rgb2srgb = (r) => Math.round(255 * (r > 0.0031308 ? 1.055 * r ** (1.0 / 2.4) - 0.055 : r * 12.92));
 const xyz2rgb = (xyz) => {
     const x = xyz[0] * 0.01;
     const y = xyz[1] * 0.01;

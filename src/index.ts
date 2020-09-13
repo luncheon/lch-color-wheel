@@ -6,7 +6,7 @@ import xyz2lab from 'pure-color/convert/xyz2lab'
 
 const rgb2lch = (rgb: readonly [number, number, number]) => lab2lch(xyz2lab(rgb2xyz(rgb)))
 
-const rgb2srgb = (r: number) => Math.round(256 * (r > 0.0031308 ? 1.055 * r ** (1.0 / 2.4) - 0.055 : r * 12.92))
+const rgb2srgb = (r: number) => Math.round(255 * (r > 0.0031308 ? 1.055 * r ** (1.0 / 2.4) - 0.055 : r * 12.92))
 
 const xyz2rgb = (xyz: readonly [number, number, number]): [number, number, number] => {
   const x = xyz[0] * 0.01
