@@ -1,5 +1,7 @@
 # LCh Color Wheel
 
+[![BundlePhobia](https://badgen.net/bundlephobia/minzip/lch-color-wheel)](https://bundlephobia.com/result?p=lch-color-wheel) ![Types: included](https://badgen.net/npm/types/lch-color-wheel) ![License: WTFPL](https://badgen.net/npm/license/lch-color-wheel)
+
 <img src="https://luncheon.github.io/lch-color-wheel/capture.png" width="200" height="200">
 
 A wheel-style color picker based on CIE L\*C\*h color space.
