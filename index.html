@@ -128,7 +128,7 @@
             const s = +match[2]
             const l = +match[3]
             if (!isNaN(h) && !isNaN(s) && !isNaN(l)) {
-              colorWheel.rgb = hsl2rgb(h, s, l)
+              colorWheel.rgb = hsl2rgb([h, s, l])
             }
           }
         })
